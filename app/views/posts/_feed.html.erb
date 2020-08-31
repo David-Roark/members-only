@@ -1,0 +1,52 @@
+<div class="column is-9">
+
+  <div class="media box">
+    <% if current_user %>
+    <div class="media-left">
+      <p class="image is-64x64">
+        <%= gravatar_image_tag(current_user.email, size: 64, alt: current_user.name) %>
+      </p>
+    </div>
+    <% end %>
+
+    <div class="media-content">
+      <%= render 'form' %>
+    </div>
+  </div>
+
+
+    <% @posts.each do |post| %>
+    <div class="media">
+      <div class="media-left">
+        <p class="image is-32x32">
+          <%= gravatar_image_tag(post.user.email, size: 32, alt: post.user.name) %>
+        </p>
+      </div>
+
+      <div class="media-content">
+        <div class="content">
+          <div class="label"><%= post.user.name %></div>
+            <strong><%= post.title %></strong><br>
+            <p><%= post.body[0..250] %><%= '...' if post.body.size > 250 %></p>
+            <hr class='dropdown-divider'>
+            <div class="level">
+              <div class="level-left is-mobile">
+                <%= link_to post, class: 'level-item' do %>
+                <span class="icon is-medium"><i class='fa fa-link'></i></span>
+                <% end %>
+
+                <%# link_to comment, class; 'level-item' do  %>
+                <span class="icon is-medium"><i class='fa fa-comments'></i></span>
+                <%# end %>
+
+              </div>
+          
+          </div>
+
+        </div>
+      </div>
+
+
+    </div>
+    <% end %>
+  </div>
