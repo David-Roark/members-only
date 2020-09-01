@@ -1,0 +1,44 @@
+<div class="column is-3">
+  <nav class="panel">
+    <p class="panel-heading">New Members</p>
+    <% @new_members.each do |member| %>
+    <!-- info of each new member -->
+    <div class="panel-block">
+      <div class="media">
+        <div class="media-left">
+          <p class="image is-32x32">
+            <%= gravatar_image_tag(member.email, size: 32) %>
+          </p>
+        </div>
+        <div class="media-content">
+          <p class="content">
+            <strong><%= member.name %></strong><br>
+            <small>Becoming member <%= time_ago_in_words(member.created_at) %> ago</small>
+          </p>
+        </div>
+
+      </div>
+    </div>
+    <div class="panel-block">
+      <nav class="level is-mobile">
+        <div class="level-item has-centered-text">
+          <div>
+            <p class="heading">Posts</p>
+            <p class="title is-7"><%= member.posts.size %></p>
+
+          </div>
+        </div>
+        <div class="level-item has-centered-text">
+          <div>
+
+            <p class="heading">Comments</p>
+            <p class="title is-7">Comming...</p>
+          </div>
+        </div>
+
+      </nav>
+    </div>
+    <% end %>
+  </nav>
+
+</div>

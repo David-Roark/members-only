@@ -1,12 +1,14 @@
 class PostsController < ApplicationController
   before_action :set_post, only: [:show, :edit, :update, :destroy]
-  before_action :authenticate_user!, except: [:index]
+  before_action :authenticate_user!, except: [:index, :show]
 
   # GET /posts
   # GET /posts.json
   def index
     @posts = Post.all
     @post = Post.new
+    @new_members = User.last(5)
+    set_anonymous
   end
 
   # GET /posts/1
@@ -72,5 +74,20 @@ class PostsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def post_params
       params.require(:post).permit(:title, :body)
+    end
+
+    # set anonymous for members
+    def set_anonymous
+      unless user_signed_in?
+        @posts.map do |post|
+          post.user.name = 'Anonymous'
+          post.user.email = 'example@example.com'
+        end
+
+        @new_members.map do |user|
+          user.name = 'Anonymous'
+          user.email = 'example@example.com'
+        end
+      end
     end
 end

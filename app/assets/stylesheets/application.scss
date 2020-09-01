@@ -14,7 +14,21 @@
  *= require_self
  */
 @import 'bulma';
+.notification:not(:last-child) {
+  margin-bottom: 0;
+}
+.global-notification {
+  border-radius: 0;
+}
 
 .navbar-brand .title {
   color: white;
+}
+
+.navbar-end {
+  align-items: center;
+  .control a {
+    padding: 1rem 0.5rem;
+    color: white;
+  }
 }
