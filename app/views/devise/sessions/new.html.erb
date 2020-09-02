@@ -1,20 +1,35 @@
-<h2>Log in</h2>
+<div class="section">
+  <div class="container">
+    <div class="columns">
+      <div class="column is-8">
+        <div class="title">Log in</div>
+        <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
 
-<%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="form-inputs">
-    <%= f.input :email,
-                required: false,
-                autofocus: true,
-                input_html: { autocomplete: "email" } %>
-    <%= f.input :password,
-                required: false,
-                input_html: { autocomplete: "current-password" } %>
-    <%= f.input :remember_me, as: :boolean if devise_mapping.rememberable? %>
+        <div class="control">
+          <div class="field">
+
+            <%= f.input :email, required: true, wrapper:false, input_html: {class: 'input'}, label_html: {class: 'label'} %>
+          </div>
+
+        </div>
+        <div class="control">
+          <div class="field">
+            <%= f.input :password, wrapper:false,
+            hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length),
+                        required: false, label_html: {class: 'label'},
+                        input_html: { autocomplete: "new-password", class: 'input' } %>
+          </div>
+        </div>
+        <%= f.button :submit, "Log in", class: 'button is-info'%>
+        <div class="column is-4">
+
+          <%= f.input :remember_me, as: :boolean if devise_mapping.rememberable? %>
+        </div>
+
+        <% end %>
+      </div>
+    </div>
+    <%= render "devise/shared/links" %>
+
   </div>
-
-  <div class="form-actions">
-    <%= f.button :submit, "Log in" %>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</div>

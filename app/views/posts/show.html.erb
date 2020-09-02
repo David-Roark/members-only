@@ -1,31 +1,118 @@
-<p id="notice"><%= notice %></p>
+<div class="section">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-10">
+        <div class="box">
+          <div class="media">
+            <!-- avatar -->
+            <div class="media-left">
+              <p class="image is-64x64">
+                <%= gravatar_image_tag(@post.user.email, size: 64, alt: @post.user.name) %>
+              </p>
+              <div class="label"><%= @post.user.name %></div>
+            </div>
+            <!-- article -->
+            <div class="media-content">
+              <div class="content">
+                <strong><%= @post.title %></strong><br>
+                <p><%= @post.body %></p>
 
-<p>
-  <strong>Title:</strong>
-  <%= @post.title %>
-</p>
+                <div class="level">
+                  <div class="level-left"></div>
+                  <div class="level-right">
+                    <small style="font-size: 0.7em"><%= time_ago_in_words(@post.created_at) %>ago</small>
+                  </div>
+                </div>
 
-<p>
-  <strong>Body:</strong>
-  <%= @post.body %>
-</p>
+                <hr class='dropdown-divider'>
+                <!-- function of article -->
+                <div class="level">
+                  <div class="level-right"></div>
+                  <div class="level-right is-mobile">
+                    <% if current_user == @post.user %>
+                      <%= link_to edit_post_path(@post), class: 'level-item' do %>
+                      <span class="icon">
+                        <i class="fa fa-pencil"></i>
+                      </span>
+                      <% end %>
 
-<p>
-  <strong>User:</strong>
-  <%= @post.user_id %>
-</p>
+                      <%= link_to @post, method: 'delete', class: 'level-item', data: { confirm: 'Are you sure you want to delete this article?' } do %>
+                      <span class="icon">
+                        <i class="fa fa-trash"></i>
+                      </span>
+                      <% end %>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><br>
+        </div>
 
-<%= link_to 'Edit', edit_post_path(@post) %> |
-<%= link_to 'Back', posts_path %>
-
-
-<% if current_user == post.user %>
-  <%= link_to edit_post_path(post), class: 'level-item' do %>
-  <span class="icon"><i class="fa fa-pencil"></i></span>
-  <% end %>
-
-  <%= link_to post, method: 'delete', class: 'level-item',
-                     data: { confirm: 'Are you sure you want to delete this tweet?' } do %>
-  <span class="icon"><i class="fa fa-trash" ></i></span>
-  <% end %>
-<% end %>
+        <h3>Comments:</h3><br><br>
+        <!-- List comments -->
+        <% @comments.each do |comment| %>
+          <div class="media">
+            <div class="media-left">
+              <p class="image is-32x32">
+                <%= gravatar_image_tag(comment.user.email, size: 32, alt: comment.user.name) %>
+              </p>
+              <div class="label"><%= comment.user.name %></div>
+            </div>
+            <div class="media-content">
+              <div class="box">
+                <p><%= comment.content %></p>
+                <div class="level">
+                  <div class="level-right"></div>
+                  <div class="level-right is-mobile">
+                    <% if current_user == comment.user %>
+                      <%= link_to comment, method: 'delete', class: 'level-item', data: { confirm: 'Are you sure you want to delete this comment?' } do %>
+                      <span class="icon">
+                        <i class="fa fa-trash"></i>
+                      </span>
+                      <% end %>
+                    <% end %>
+                  </div>
+                </div>
+                <div class="level">
+                  <div class="level-left"></div>
+                  <div class="level-right">
+                    <small style="font-size: 0.7em"><%= time_ago_in_words(comment.created_at) %>ago</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+            <!-- New comment -->
+            <div id="new-comment"></div>
+            <% if user_signed_in? %>
+              <div class="media">
+                <div class="media-left">
+                  <p class="image is-32x32">
+                    <%= gravatar_image_tag(current_user.email, size: 32, alt: current_user.name) %>
+                  </p>
+                  <div class="label"><%= current_user.name %></div>
+                </div>
+                <div class="media-content">
+                  <%= simple_form_for @comment do |f| %>
+                    <%= f.error_notification %>
+                    <div class="field">
+                      <div class="control">
+                        <%= f.input :content, label: 'Your comment', wrapper: false, label_html: {class: 'label'}, input_html: {class: 'textarea'}, require: true, placeholder: "what do you think?" %>
+                      </div>
+                    </div>
+                    <input type="hidden" name="comment[post_id]" value="<%= @post.id %>">
+                  <%= f.submit class: 'button is-info' %>
+                  <% end %>
+                </div>
+              </div>
+            <% else %>
+            <br>
+            <h3>New member?</h3>
+            <%= link_to 'Sign up now!', new_user_session_path %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -5,20 +5,26 @@ class PostsController < ApplicationController
   # GET /posts
   # GET /posts.json
   def index
-    @posts = Post.all
+    @posts = Post.order('created_at DESC')
     @post = Post.new
     @new_members = User.last(5)
-    set_anonymous
+
+    unless user_signed_in?
+      @posts.map{ |post| set_anonymous(post.user) }
+      @new_members.map{ |member| set_anonymous(member) }
+    end
   end
 
   # GET /posts/1
   # GET /posts/1.json
   def show
-  end
+    @comments = @post.comments
+    @comment = Comment.new
 
-  # GET /posts/new
-  def new
-    @post = current_user.posts.build
+    unless user_signed_in?
+      set_anonymous(@post.user)
+      @comments.map{ |comment| set_anonymous(comment.user) }
+    end
   end
 
   # GET /posts/1/edit
@@ -35,7 +41,8 @@ class PostsController < ApplicationController
         format.html { redirect_to root_path, notice: 'Post was successfully created.' }
         format.json { render :show, status: :created, location: @post }
       else
-        format.html { render :index }
+        errors = @post.errors.full_messages.join('! ')
+        format.html { redirect_to root_path, alert: "Post was failly created!\n#{errors}!" }
         format.json { render json: @post.errors, status: :unprocessable_entity }
       end
     end
@@ -46,10 +53,11 @@ class PostsController < ApplicationController
   def update
     respond_to do |format|
       if @post.update(post_params)
-        format.html { redirect_to @post, notice: 'Post was successfully updated.' }
+        format.html { redirect_to post_path(@post), notice: 'Post was successfully updated.' }
         format.json { render :show, status: :ok, location: @post }
       else
-        format.html { render :edit }
+        errors = @post.errors.full_messages.join('! ')
+        format.html { redirect_to edit_post_path(@post), alert: "Post was failly updated!\n#{errors}!" }
         format.json { render json: @post.errors, status: :unprocessable_entity }
       end
     end
@@ -76,18 +84,8 @@ class PostsController < ApplicationController
       params.require(:post).permit(:title, :body)
     end
 
-    # set anonymous for members
-    def set_anonymous
-      unless user_signed_in?
-        @posts.map do |post|
-          post.user.name = 'Anonymous'
-          post.user.email = 'example@example.com'
-        end
-
-        @new_members.map do |user|
-          user.name = 'Anonymous'
-          user.email = 'example@example.com'
-        end
-      end
+    def set_anonymous(user)
+      user.email = 'example@example.com'
+      user.name = 'Anonymous'
     end
 end

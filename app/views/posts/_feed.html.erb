@@ -27,7 +27,7 @@
         <div class="content">
           <div class="label"><%= post.user.name %></div>
             <strong><%= post.title %></strong><br>
-            <p><%= post.body[0..250] %><%= '...' if post.body.size > 250 %></p>
+            <p><%= post.body[0..250] %><%= link_to '...read more', post_path(post) if post.body.size > 250 %></p>
             <div class="level">
               <div class="level-left"></div>
               <div class="level-right">
@@ -37,14 +37,9 @@
             <hr class='dropdown-divider'>
             <div class="level">
               <div class="level-left is-mobile">
-                <%= link_to post, class: 'level-item' do %>
-                <span class="icon is-medium"><i class='fa fa-link'></i></span>
-                <% end %>
-
-                <%# link_to comment, class; 'level-item' do  %>
+                <%= link_to post_path(post, anchor: 'new-comment'), class: 'level-item' do %>
                 <span class="icon is-medium"><i class='fa fa-comments'></i></span>
-                <%# end %>
-
+                <% end %>
               </div>
             </div>
 
